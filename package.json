@@ -1,0 +1,24 @@
+{
+  "name": "couchapp-settings",
+  "version": "0.0.0",
+  "description": "Reusable widget to set couchapp settings based on a json-schema",
+  "main": "couchapp-settings.js",
+  "dependencies": {
+    "jquery": null,
+    "json.edit": null,
+    "couchr": null,
+    "text": null
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/garden20/couchapp-settings.git"
+  },
+  "keywords": [
+    "garden",
+    "couchapp",
+    "couchdb"
+  ],
+  "author": "Ryan Ramage",
+  "license": "BSD",
+  "readmeFilename": "README.md"
+}

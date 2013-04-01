@@ -78,7 +78,10 @@
         doc.app_settings = form.data;
         couchr.put(ddoc_url, doc, function(err, results){
             if (err) return alert('could not save');
-            //btn.button('reset');
+            if (!callback) return;
+            callback(err, {
+                app_settings: doc.app_settings
+            });
         });
 
     }

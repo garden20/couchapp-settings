@@ -26,26 +26,33 @@
     function settings_doc($elem, ddoc_url, schema_property, settings_doc_url) {
         var emitter = new events.EventEmitter();
 
-        get_doc(doc_url, function(err, doc){
+        get_doc(settings_doc_url, function(err, doc){
 
             // I guess we should check if its just a 404
             // if (err) return emitter.emit('error', err);
+            if (err) doc = null;
 
             get_doc(ddoc_url, function(err, ddoc){
                 if (err) return emitter.emit('error', err);
 
                 var schema = load_schema(ddoc, schema_property, emitter);
 
-                render($elem, emitter, schema, current_values, function(err, new_settings){
+                render($elem, emitter, schema, doc, function(err, new_settings){
 
-                    if (doc && doc._id)  new_settings._id = doc._id;
+                    if (doc && doc._id) {
+                        new_settings._id = doc._id;
+                    }
+                    else {
+                        var parts = settings_doc_url.split('/');
+                        new_settings._id = parts.slice(-1)[0];
+                    }
                     if (doc && doc._rev) new_settings._rev = doc._rev;
 
-                    couchr.put(settings_doc_url, doc, function(err, results){
+                    couchr.put(settings_doc_url, new_settings, function(err, results){
                         if (err) return render_err($elem, 'Could not save');
 
                         emitter.emit('saved', {
-                            app_settings: doc
+                            app_settings: new_settings
                         });
 
                     });
@@ -61,6 +68,8 @@
 
 
     function settings_ddoc($elem, ddoc_url, schema_property, settings_property) {
+
+        var emitter = new events.EventEmitter();
 
         if (!settings_property) settings_property = 'app_settings';
 
@@ -92,8 +101,9 @@
         if (!schema_property) {
             schema_property = 'couchapp.config.settings_schema';
         }
-        var schema = simple_path(schema_property, doc);
+        var schema = simple_path(schema_property, ddoc);
         emitter.emit('schema', schema);
+        return schema;
     }
 
 
